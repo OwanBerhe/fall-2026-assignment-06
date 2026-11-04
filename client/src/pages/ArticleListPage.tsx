@@ -56,9 +56,6 @@ export const ArticleListPage: React.FC = () => {
     <div>
       <header className="page-header">
         <h1>Articles</h1>
-        <Link to="/articles/new" className="btn btn-primary">
-          Create Article
-        </Link>
       </header>
 
       <div className="search-container">
