@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export interface ArticleFormValues {
@@ -48,15 +48,6 @@ export const ArticleForm: React.FC<ArticleFormProps> = ({
     string | null
   >(null);
   const [submittingInternal, setSubmittingInternal] = useState(false);
-
-  // Sync internal state if initialValues changes
-  useEffect(() => {
-    if (initialValues) {
-      if (initialValues.title !== undefined) setTitle(initialValues.title);
-      if (initialValues.contents !== undefined)
-        setContents(initialValues.contents);
-    }
-  }, [initialValues?.title, initialValues?.contents]);
 
   const isBusy = isSubmittingProp ?? submittingInternal;
 

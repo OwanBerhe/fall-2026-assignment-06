@@ -7,23 +7,18 @@ export const ArticleDetailPage: React.FC = () => {
   const { articleId } = useParams<{ articleId: string }>();
   const navigate = useNavigate();
   const numericId = Number(articleId);
+  const isInvalidId = !articleId || Number.isNaN(numericId);
 
   const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isInvalidId);
   const [error, setError] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    if (!articleId || Number.isNaN(numericId)) {
-      setError('Invalid article ID');
-      setLoading(false);
-      return;
-    }
+    if (isInvalidId) return;
 
     let isMounted = true;
-    setLoading(true);
-    setError(null);
 
     getArticle(numericId)
       .then((data) => {
@@ -44,7 +39,7 @@ export const ArticleDetailPage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [articleId, numericId]);
+  }, [numericId, isInvalidId]);
 
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this article?')) {
@@ -65,25 +60,28 @@ export const ArticleDetailPage: React.FC = () => {
     }
   };
 
+  const displayError = isInvalidId ? 'Invalid article ID' : error;
+  const isLoading = !isInvalidId && loading;
+
   return (
-    <main>
+    <div>
       <Link to="/" className="back-link">
         &larr; Back to articles
       </Link>
 
-      {loading && (
+      {isLoading && (
         <div className="status-message status-loading" role="status">
           Loading...
         </div>
       )}
 
-      {!loading && error && (
+      {!isLoading && displayError && (
         <div className="status-message status-error" role="alert">
-          <p>{error}</p>
+          <p>{displayError}</p>
         </div>
       )}
 
-      {!loading && !error && article && (
+      {!isLoading && !displayError && article && (
         <article className="article-detail">
           {deleteError && (
             <div className="status-message status-error" role="alert">
@@ -116,6 +114,6 @@ export const ArticleDetailPage: React.FC = () => {
           <CommentSection articleId={article.articleId} />
         </article>
       )}
-    </main>
+    </div>
   );
 };

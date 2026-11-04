@@ -7,22 +7,17 @@ export const EditArticlePage: React.FC = () => {
   const { articleId } = useParams<{ articleId: string }>();
   const navigate = useNavigate();
   const numericId = Number(articleId);
+  const isInvalidId = !articleId || Number.isNaN(numericId);
 
   const [article, setArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!isInvalidId);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!articleId || Number.isNaN(numericId)) {
-      setLoadError('Invalid article ID');
-      setLoading(false);
-      return;
-    }
+    if (isInvalidId) return;
 
     let isMounted = true;
-    setLoading(true);
-    setLoadError(null);
 
     getArticle(numericId)
       .then((data) => {
@@ -43,7 +38,7 @@ export const EditArticlePage: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [articleId, numericId]);
+  }, [numericId, isInvalidId]);
 
   const handleSubmit = async (data: ArticleFormValues) => {
     setSubmitError(null);
@@ -57,8 +52,11 @@ export const EditArticlePage: React.FC = () => {
     }
   };
 
+  const displayLoadError = isInvalidId ? 'Invalid article ID' : loadError;
+  const isLoading = !isInvalidId && loading;
+
   return (
-    <main>
+    <div>
       <Link
         to={article ? `/articles/${article.articleId}` : '/'}
         className="back-link"
@@ -70,20 +68,21 @@ export const EditArticlePage: React.FC = () => {
         <h1>Edit Article</h1>
       </header>
 
-      {loading && (
+      {isLoading && (
         <div className="status-message status-loading" role="status">
           Loading...
         </div>
       )}
 
-      {!loading && loadError && (
+      {!isLoading && displayLoadError && (
         <div className="status-message status-error" role="alert">
-          <p>{loadError}</p>
+          <p>{displayLoadError}</p>
         </div>
       )}
 
-      {!loading && !loadError && article && (
+      {!isLoading && !displayLoadError && article && (
         <ArticleForm
+          key={article.articleId}
           initialValues={{
             title: article.title,
             contents: article.contents,
@@ -94,6 +93,6 @@ export const EditArticlePage: React.FC = () => {
           errorMessage={submitError}
         />
       )}
-    </main>
+    </div>
   );
 };

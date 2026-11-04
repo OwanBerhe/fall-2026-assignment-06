@@ -17,13 +17,12 @@ export const CommentSection: React.FC<CommentSectionProps> = ({
 
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
-    setError(null);
 
     listComments(articleId)
       .then((data) => {
         if (isMounted) {
           setComments(data);
+          setError(null);
           setLoading(false);
         }
       })

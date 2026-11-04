@@ -20,7 +20,7 @@ export const CreateArticlePage: React.FC = () => {
   };
 
   return (
-    <main>
+    <div>
       <Link to="/" className="back-link">
         &larr; Back to articles
       </Link>
@@ -35,6 +35,6 @@ export const CreateArticlePage: React.FC = () => {
         cancelPath="/"
         errorMessage={error}
       />
-    </main>
+    </div>
   );
 };

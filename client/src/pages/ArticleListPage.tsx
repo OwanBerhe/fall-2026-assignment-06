@@ -29,13 +29,12 @@ export const ArticleListPage: React.FC = () => {
   // Fetch articles whenever debouncedQuery changes (including on mount)
   useEffect(() => {
     let isMounted = true;
-    setLoading(true);
-    setError(null);
 
     listArticles(debouncedQuery)
       .then((data) => {
         if (isMounted) {
           setArticles(data);
+          setError(null);
           setLoading(false);
         }
       })
@@ -54,7 +53,7 @@ export const ArticleListPage: React.FC = () => {
   }, [debouncedQuery]);
 
   return (
-    <main>
+    <div>
       <header className="page-header">
         <h1>Articles</h1>
         <Link to="/articles/new" className="btn btn-primary">
@@ -69,7 +68,10 @@ export const ArticleListPage: React.FC = () => {
           placeholder="Search articles by title..."
           aria-label="Search articles by title"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setLoading(true);
+          }}
         />
       </div>
 
@@ -118,6 +120,6 @@ export const ArticleListPage: React.FC = () => {
           ))}
         </ul>
       )}
-    </main>
+    </div>
   );
 };
