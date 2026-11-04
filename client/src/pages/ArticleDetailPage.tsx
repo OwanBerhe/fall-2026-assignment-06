@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getArticle, deleteArticle, type Article } from '../api';
+import { CommentSection } from '../components/CommentSection';
 
 export const ArticleDetailPage: React.FC = () => {
   const { articleId } = useParams<{ articleId: string }>();
@@ -112,10 +113,7 @@ export const ArticleDetailPage: React.FC = () => {
 
           <div className="article-content">{article.contents}</div>
 
-          <section className="comments-section" aria-label="Comments">
-            <h2 className="comments-header">Comments</h2>
-            <p className="comments-placeholder">Comments section coming soon...</p>
-          </section>
+          <CommentSection articleId={article.articleId} />
         </article>
       )}
     </main>
